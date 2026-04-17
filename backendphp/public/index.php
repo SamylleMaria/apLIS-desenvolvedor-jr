@@ -14,3 +14,17 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+$metodo = $_SERVER['REQUEST_METHOD'];
+
+use App\Controllers\MedicoController;
+
+if ($metodo === 'GET' && $uri === '/api/v1/medicos') {
+    $controller = new MedicoController();
+    $controller->listar();
+    exit;
+}
+
+http_response_code(404);
+echo json_encode(['erro' => 'Rota não encontrada']);
