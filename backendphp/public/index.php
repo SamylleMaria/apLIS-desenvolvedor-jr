@@ -20,9 +20,17 @@ $metodo = $_SERVER['REQUEST_METHOD'];
 
 use App\Controllers\MedicoController;
 
+// Listar
 if ($metodo === 'GET' && $uri === '/api/v1/medicos') {
     $controller = new MedicoController();
     $controller->listar();
+    exit;
+}
+
+// Cadastrar
+if ($metodo === 'POST' && $uri === '/api/v1/medicos') {
+    $controller = new MedicoController();
+    $controller->cadastrar();
     exit;
 }
 
