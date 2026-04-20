@@ -1,7 +1,9 @@
 <?php
 namespace App\Models;
 
+use Exception;
 use PDO;
+use PDOException;
 
 class Medico {
     private ?PDO $conexao;
@@ -19,17 +21,32 @@ class Medico {
     }
 
     public function cadastrarMedico(array $dados): bool {
-        $sql = "INSERT INTO medicos (nome, crm, ufcrm) VALUES (:nome, :crm, :ufcrm)";
-        $stmt = $this->conexao->prepare($sql);
 
         $nomeLimpo = htmlspecialchars(strip_tags($dados['nome']));
         $crmLimpo = htmlspecialchars(strip_tags($dados['crm']));
-        $ufcrmlimpo = htmlspecialchars(strip_tags($dados['ufcrm']));
+        $ufcrmLimpo = htmlspecialchars(strip_tags($dados['ufcrm']));
 
-        $stmt->bindValue(':nome', $nomeLimpo);
-        $stmt->bindValue(':crm', $crmLimpo);
-        $stmt->bindValue(':ufcrm', $ufcrmlimpo);
+        if(empty($nomeLimpo) || empty($crmLimpo) || empty($ufcrmLimpo)) {
+            throw new Exception('Nome, CRM e UF são obrigatórios.');
+        }
 
-        return $stmt->execute();
+        $sql = "INSERT INTO medicos (nome, crm, ufcrm) VALUES (:nome, :crm, :ufcrm)";
+        $stmt = $this->conexao->prepare($sql);
+
+
+        try {
+            $stmt->bindValue(':nome', $nomeLimpo);
+            $stmt->bindValue(':crm', $crmLimpo);
+            $stmt->bindValue(':ufcrm', $ufcrmLimpo);
+
+            return $stmt->execute();
+
+
+            } catch (PDOException $e) {
+                if ($e->errorInfo[1] === 1062) {
+                    throw new Exception('CRM já cadastrado');
+                }
+            throw $e;
+        }
     }
 }
