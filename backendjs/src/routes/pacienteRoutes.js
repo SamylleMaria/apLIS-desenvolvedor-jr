@@ -1,0 +1,9 @@
+const express = require('express')
+const router = express.Router()
+const PacienteController = require('../controllers/PacienteController')
+
+router.get('/pacientes', PacienteController.listarPaciente)
+
+router.post('/pacientes', PacienteController.cadastrarPaciente)
+
+module.exports = router
