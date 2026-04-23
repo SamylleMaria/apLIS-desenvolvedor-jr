@@ -49,4 +49,37 @@ class Medico {
             throw $e;
         }
     }
+
+    public function editarMedico(int $id, array $dados): bool {
+    // Sanitização dos dados
+    $nomeLimpo = htmlspecialchars(strip_tags($dados['nome']));
+    $crmLimpo = htmlspecialchars(strip_tags($dados['crm']));
+    $ufcrmLimpo = htmlspecialchars(strip_tags($dados['ufcrm']));
+
+    $sql = "UPDATE medicos SET nome = :nome, crm = :crm, ufcrm = :ufcrm WHERE id = :id";
+    $stmt = $this->conexao->prepare($sql);
+
+        try {
+            $stmt->bindValue(':nome', $nomeLimpo);
+            $stmt->bindValue(':crm', $crmLimpo);
+            $stmt->bindValue(':ufcrm', $ufcrmLimpo);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+            return $stmt->execute();
+            
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                throw new Exception('Este CRM já está sendo usado por outro médico.');
+            }
+            throw $e;
+        }
+    }
+
+    public function deletarMedico(int $id): bool {
+        $sql = "DELETE FROM medicos WHERE id = :id";
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        
+        return $stmt->execute();
+    }
 }
