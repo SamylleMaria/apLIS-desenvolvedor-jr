@@ -29,6 +29,35 @@ const PacienteController = {
             return res.status(status).json({erro: erro.message})
 
         }
+    },
+
+    editarPaciente: async (req, res) => {
+        try {
+            const { id } = req.params
+            const dados = req.body
+
+            await Paciente.editarPaciente(id, dados)
+
+            return res.status(200).json({ msg: 'Paciente atualizado com sucesso' })
+
+        } catch (erro) {
+            console.error('Erro ao editar:', erro.message)
+            return res.status(500).json({ erro: 'CPF ou carteirinha já cadastrados.' })
+        }
+    },
+
+    deletarPaciente: async (req, res) => {
+        try {
+            const { id } = req.params
+
+            await Paciente.deletarPaciente(id)
+
+            return res.status(200).json({ msg: 'Paciente removido com sucesso' })
+
+        } catch (erro) {
+            console.error('Erro ao deletar:', erro.message)
+            return res.status(500).json({ erro: 'Erro ao remover paciente' })
+        }
     }
 
 }
