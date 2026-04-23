@@ -3,7 +3,7 @@ USE aplis_db;
 DELETE FROM medicos;
 DELETE FROM pacientes;
 
-INSERT INTO medicos (id, nome, crm, uf_crm) VALUES
+INSERT INTO medicos (id, nome, crm, ufcrm) VALUES
 (1, 'João da Silva', '123456', 'CE'),
 (2, 'Francisco Pereira', '876543', 'CE');
 
